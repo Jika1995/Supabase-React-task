@@ -1,5 +1,6 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
+import AddTemplate from "./components/Templates/AddTemplate";
 import HomePage from "./pages/HomePage";
 // import AuthPage from "./pages/AuthPage";
 
@@ -10,6 +11,11 @@ const MainRoutes = () => {
             element: <HomePage />,
             id: 1,
         },
+        {
+            link: '/addtemplate',
+            element: <AddTemplate />,
+            id: 2
+        }
         // {
         //     link: '/signup',
         //     element: <AuthPage />,
