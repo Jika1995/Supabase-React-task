@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 export const authContext = React.createContext();
 export const useAuth = () => useContext(authContext); //custom hook
@@ -7,6 +6,7 @@ export const useAuth = () => useContext(authContext); //custom hook
 const AuthContextProvider = ({ children }) => {
 
     const [session, setSession] = useState(null);
+    const [userInSysId, setUserInSysId] = useState(null);
 
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -14,7 +14,7 @@ const AuthContextProvider = ({ children }) => {
 
     const isUserLoggedIn = () => {
         supabase.auth.getSession().then(({ data: { session } }) => {
-            setSession(session)
+            setSession(session);
         })
 
         const {
@@ -24,6 +24,10 @@ const AuthContextProvider = ({ children }) => {
         })
 
         return () => subscription.unsubscribe()
+    };
+
+    const getLoggedUser = () => {
+
     }
 
     const logout = async () => {
@@ -34,6 +38,7 @@ const AuthContextProvider = ({ children }) => {
         session,
         error,
         loading,
+        userInSysId,
 
         isUserLoggedIn,
         logout,

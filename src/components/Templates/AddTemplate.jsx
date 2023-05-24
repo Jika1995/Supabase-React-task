@@ -1,47 +1,24 @@
-// import { Container } from '@mui/material'
-// import React from 'react'
-
-// const AddTemplate = () => {
-//     return (
-//         <div>
-//             <Container>
-//                 <TextField variant='standard' placeholder='Enter name of this template' label="Template's name*" color='secondary' fullWidth>
-//                 </TextField>
-//                 <TextField variant='standard' placeholder='Enter text' label="Template's email text*" color='secondary' fullWidth>
-//                 </TextField>
-//                 <TextField
-//                     variant="standard"
-//                     label="Image"
-//                     placeholder="Image"
-//                     color="secondary"
-//                     fullWidth
-//                     type="file"
-//                     accept="image/*"
-//                 // onChange={e => setImage(e.target.files[0])}
-//                 ></TextField>
-//             </Container>
-//         </div>
-//     )
-// }
-
-// export default AddTemplate
-
-import { Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
 import React from 'react';
+import { Box, Button, Container, FormControl, IconButton, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import { addTemplate } from '../../store/slices/templateSlice';
+import { useDispatch } from 'react-redux';
 
 const AddTemplate = () => {
-    const [subject, setSubject] = React.useState('');
-    const [body, setBody] = React.useState('');
-    const [fontSize, setFontSize] = React.useState('12px');
-    const [fontStyle, setFontStyle] = React.useState('Arial');
+    const [name, setName] = React.useState('');
+    const [email_text, setEmailText] = React.useState('');
+    const [font_size, setFontSize] = React.useState('12px');
+    const [font, setFontStyle] = React.useState('Arial');
     const [selectedImage, setSelectedImage] = React.useState(null);
 
+    const dispatch = useDispatch();
+
     const handleSubjectChange = (event) => {
-        setSubject(event.target.value);
+        setName(event.target.value);
     };
 
     const handleBodyChange = (event) => {
-        setBody(event.target.value);
+        setEmailText(event.target.value);
     };
 
     const handleFontSizeChange = (event) => {
@@ -58,20 +35,60 @@ const AddTemplate = () => {
 
     const handleSubmit = () => {
         // Handle form submission here
-        console.log('Subject:', subject);
-        console.log('Body:', body);
-        console.log('Font Size:', fontSize);
-        console.log('Font Style:', fontStyle);
+        console.log('Subject:', name);
+        console.log('Body:', email_text);
+        console.log('Font Size:', font_size);
+        console.log('Font Style:', font);
         console.log('Selected Image:', selectedImage);
     };
 
     return (
-        <div>
+        <Container sx={{ marginY: '20px' }}>
+            <Typography variant='h4' align='center' color='secondary'>Add template</Typography>
+            <Box sx={{ width: '40%', display: 'flex', justifyContent: 'space-between' }}>
+                <FormControl variant="outlined" margin="normal" sx={{ width: '20%' }} color='secondary'>
+                    <InputLabel>Font Size</InputLabel>
+                    <Select value={font_size} onChange={handleFontSizeChange} label="Font Size">
+                        <MenuItem value="12px">12px</MenuItem>
+                        <MenuItem value="14px">14px</MenuItem>
+                        <MenuItem value="16px">16px</MenuItem>
+                        <MenuItem value="18px">18px</MenuItem>
+                    </Select>
+                </FormControl>
+
+                <FormControl variant="outlined" margin="normal" sx={{ width: '30%' }} color='secondary'>
+                    <InputLabel>Font Style</InputLabel>
+                    <Select value={font} onChange={handleFontStyleChange} label="Font Style">
+                        <MenuItem value="Arial">Arial</MenuItem>
+                        <MenuItem value="Verdana">Verdana</MenuItem>
+                        <MenuItem value="Times New Roman">Times New Roman</MenuItem>
+                        <MenuItem value="Courier New">Courier New</MenuItem>
+                    </Select>
+                </FormControl>
+                <input
+                    type="file"
+                    accept="image/*"
+                    id="image-upload"
+                    onChange={handleImageUpload}
+                    style={{ display: 'none' }}
+                />
+
+                <label htmlFor="image-upload">
+                    <IconButton size='large' component="span" sx={{ alignSelf: 'center' }}>
+                        <AddPhotoAlternateIcon color='secondary' fontSize='large' />
+                    </IconButton>
+                </label>
+
+                <Typography variant="caption" display="block" gutterBottom>
+                    {selectedImage && `Selected Image: ${selectedImage.name}`}
+                </Typography>
+
+            </Box>
             <TextField
-                label="Name*"
+                label="Template's name*"
                 variant="outlined"
                 color='secondary'
-                value={subject}
+                value={name}
                 onChange={handleSubjectChange}
                 fullWidth
                 margin="normal"
@@ -80,7 +97,8 @@ const AddTemplate = () => {
 
             <TextField
                 variant="outlined"
-                value={body}
+                color='secondary'
+                value={email_text}
                 onChange={handleBodyChange}
                 fullWidth
                 multiline
@@ -89,52 +107,17 @@ const AddTemplate = () => {
                 placeholder='Enter text'
                 label="Template's email text*"
             />
-
-            <FormControl variant="outlined" fullWidth margin="normal">
-                <InputLabel>Font Size</InputLabel>
-                <Select value={fontSize} onChange={handleFontSizeChange} label="Font Size">
-                    <MenuItem value="12px">12px</MenuItem>
-                    <MenuItem value="14px">14px</MenuItem>
-                    <MenuItem value="16px">16px</MenuItem>
-                    <MenuItem value="18px">18px</MenuItem>
-                </Select>
-            </FormControl>
-
-            <FormControl variant="outlined" fullWidth margin="normal">
-                <InputLabel>Font Style</InputLabel>
-                <Select value={fontStyle} onChange={handleFontStyleChange} label="Font Style">
-                    <MenuItem value="Arial">Arial</MenuItem>
-                    <MenuItem value="Verdana">Verdana</MenuItem>
-                    <MenuItem value="Times New Roman">Times New Roman</MenuItem>
-                    <MenuItem value="Courier New">Courier New</MenuItem>
-                </Select>
-            </FormControl>
-
-            <input
-                type="file"
-                accept="image/*"
-                id="image-upload"
-                onChange={handleImageUpload}
-                style={{ display: 'none' }}
-            />
-            <label htmlFor="image-upload">
-                <Button variant="outlined" component="span" fullWidth margin="normal">
-                    Upload Image
+            <Box textAlign='center'>
+                <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={handleSubmit}
+                >
+                    Add Template
                 </Button>
-            </label>
+            </Box>
 
-            <Typography variant="caption" display="block" gutterBottom>
-                {selectedImage && `Selected Image: ${selectedImage.name}`}
-            </Typography>
-
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={handleSubmit}
-            >
-                Send Email
-            </Button>
-        </div>
+        </Container>
     );
 }
 

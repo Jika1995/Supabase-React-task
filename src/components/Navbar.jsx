@@ -11,7 +11,7 @@ const pages = [
     },
     {
         type: "Add template",
-        path: "/add-template",
+        path: "/addtemplate",
     }
 ];
 
@@ -116,15 +116,19 @@ function ResponsiveAppBar() {
                     <Box
                         sx={{ flexGrow: 1, display: { md: "flex", sm: 'none', xs: 'none' } }}
                     >
-                        {pages.map((page) => (
-                            <Button
-                                key={page.type}
-                                sx={{ my: 2, color: "darkviolet", display: "block" }}
-                                onClick={() => navigate(page.path)}
-                            >
-                                {page.type}
-                            </Button>
-                        ))}
+                        {session ? (
+                            pages.map((page) => (
+                                <Button
+                                    key={page.type}
+                                    sx={{ my: 2, color: "darkviolet", display: "block" }}
+                                    onClick={() => navigate(page.path)}
+                                >
+                                    {page.type}
+                                </Button>
+                            ))
+                        ) : (
+                            ''
+                        )}
                     </Box>
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Account">
@@ -165,7 +169,7 @@ function ResponsiveAppBar() {
                             {session ? (
                                 <MenuItem onClick={handleCloseUserMenu}>
                                     <Typography textalign="center"
-                                        onClick={logout}
+                                        onClick={() => { logout(); navigate('/') }}
                                     >
                                         Logout
                                     </Typography>
@@ -180,4 +184,5 @@ function ResponsiveAppBar() {
         </AppBar>
     );
 }
+
 export default ResponsiveAppBar;

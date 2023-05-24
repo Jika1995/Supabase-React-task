@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const data = [];
 
 export const templatesSlice = createSlice({
-    name: templatesSlice,
+    name: "templatesSlice",
     initialState: data,
     reducers: {
         addTemplate: (state, action) => {
@@ -24,6 +24,7 @@ export const templatesSlice = createSlice({
                     font_size: template.font_size,
                     html_export: template.html_export,
                     name: template.name,
+                    author: template.author
                 }
             })
         }
