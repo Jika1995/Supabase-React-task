@@ -8,6 +8,7 @@ import {
 import { Auth } from '@supabase/auth-ui-react'
 import { authContext } from '../contexts/AuthContextProvider';
 import { supabase } from '../lib/supabase';
+import TemplatesList from '../components/Templates/TemplatesList';
 
 const HomePage = () => {
     const { error, setError, loading, isUserLoggedIn, session, } = useContext(authContext);
@@ -28,7 +29,7 @@ const HomePage = () => {
         <Container sx={{ margin: 'auto' }}>
             {session ?
                 (
-                    <div>Logged in!</div>
+                    <TemplatesList />
                 )
                 :
                 (

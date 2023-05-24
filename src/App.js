@@ -8,12 +8,12 @@ import { store } from './store/store';
 function App() {
 
   return (
-    <AuthContextProvider>
-      <Provider store={store}>
+    <Provider store={store}>
+      <AuthContextProvider>
         <Navbar />
         <MainRoutes />
-      </Provider>
-    </AuthContextProvider>
+      </AuthContextProvider>
+    </Provider>
   );
 }
 

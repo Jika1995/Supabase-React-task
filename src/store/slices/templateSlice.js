@@ -1,19 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const data = [];
-
 export const templatesSlice = createSlice({
     name: "templatesSlice",
-    initialState: data,
+    initialState: [],
     reducers: {
         addTemplate: (state, action) => {
-            state.data.push(action.payload);
+            state.push(action.payload);
         },
         deleteTemplate: (state, action) => {
-            state.data = state.data.filter(item => item.id != action.payload)
+            state = state.filter(item => item.id !== action.payload)
         },
-        toggleTemplate(state, action) {
-            let templateToFind = state.data.find(item => item.id === action.payload.id)
+        toggleTemplate: (state, action) => {
+            let templateToFind = state.find(item => item.id === action.payload.id)
 
             return state.map((template) => {
                 if (template !== templateToFind) return template
@@ -27,9 +25,14 @@ export const templatesSlice = createSlice({
                     author: template.author
                 }
             })
-        }
+        },
+        getOneTemplate: (state, action) => {
+            let templateToFind = state.find((item) => item.id === action.payload)
+            return templateToFind
+        },
     }
+
 })
 
-export const { addTemplate, deleteTemplate, toggleTemplate } = templatesSlice.actions
+export const { addTemplate, deleteTemplate, toggleTemplate, getOneTemplate } = templatesSlice.actions
 

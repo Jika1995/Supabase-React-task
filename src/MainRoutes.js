@@ -2,6 +2,7 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import AddTemplate from "./components/Templates/AddTemplate";
 import EditTemplate from "./components/Templates/EditTemplate";
+import TemplatesList from "./components/Templates/TemplatesList";
 import HomePage from "./pages/HomePage";
 // import AuthPage from "./pages/AuthPage";
 
@@ -18,7 +19,7 @@ const MainRoutes = () => {
             id: 2
         },
         {
-            link: '/edittemplate',
+            link: '/edit/:id',
             element: <EditTemplate />,
             id: 3
         },

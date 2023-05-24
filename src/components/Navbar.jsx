@@ -43,11 +43,14 @@ function ResponsiveAppBar() {
 
     // custom
     const navigate = useNavigate();
-    const { error, setError, loading, isUserLoggedIn, session, logout } = useContext(authContext);
+    const { error, setError, loading, isUserLoggedIn, session, logout, userInSys, getLoggedUser } = useContext(authContext);
 
     useEffect(() => {
         isUserLoggedIn();
+        getLoggedUser();
     }, [])
+
+    console.log(userInSys);
 
     return (
         <AppBar position="static" color='transparent'>
