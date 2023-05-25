@@ -9,6 +9,7 @@ import { addTemplate } from '../../store/slices/templateSlice';
 import PreviewCard from './PreviewCard';
 import ReactDOMServer from 'react-dom/server';
 import { saveAs } from 'file-saver';
+import { supabase, SUPABASE_PROJECT_URL } from '../../lib/supabase';
 
 const AddTemplate = () => {
     const { userInSys, getLoggedUser } = useContext(authContext);
@@ -20,10 +21,12 @@ const AddTemplate = () => {
         font: 'Arial',
         author: userInSys.id,
         html_export: false,
-        subject: ''
+        subject: '',
+        image: ''
     });
 
     // const [image, setSelectedImage] = useState(null);
+    const [uploadedImage, setUploadedImage] = useState('')
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -33,11 +36,14 @@ const AddTemplate = () => {
     }, [])
 
     const handleInp = (e) => {
+
         let obj = {
             ...newTemplate,
-            [e.target.name]: e.target.value
+            [e.target.name]: e.target.value,
+            image: uploadedImage
         };
         setNewTemplate(obj);
+
     };
 
     const handleSubmit = () => {
@@ -57,9 +63,28 @@ const AddTemplate = () => {
         // dispatch(addTemplate(newTemplate));
     };
 
+    async function createImages(e) {
+        const image = e.target.files[0];
+        const newImageName = Date.now() + image.name
+
+        const res = await supabase
+            .storage
+            .from('images')
+            .upload(newImageName, image)
+        if (res.error) {
+            return alert(`${res.error.message}`)
+        }
+        if (res.data) {
+            const url = SUPABASE_PROJECT_URL + '/storage/v1/object/public/images/' + res.data.path
+            setUploadedImage(url)
+        }
+
+        console.log(res);
+    }
+
     const downloadEmail = () => {
         // Generate HTML content
-        const emailContent = ReactDOMServer.renderToString(<PreviewCard item={newTemplate} />);
+        const emailContent = ReactDOMServer.renderToString(<PreviewCard item={newTemplate} image={uploadedImage} />);
 
         // Create a Blob from the HTML content
         const blob = new Blob([emailContent], { type: 'text/html;charset=utf-8' });
@@ -67,6 +92,10 @@ const AddTemplate = () => {
         // Save the Blob as a file
         saveAs(blob, 'email.html');
     };
+
+    if (!userInSys) {
+        return <p>Login please</p>
+    }
 
     return (
         <Container sx={{ marginY: '20px' }}>
@@ -97,7 +126,7 @@ const AddTemplate = () => {
                             type="file"
                             accept="image/*"
                             id="image-upload"
-                            // onChange={(e) => setSelectedImage(e.target.files[0])}
+                            onChange={(e) => createImages(e)}
                             style={{ display: 'none' }}
                         />
 
@@ -149,7 +178,7 @@ const AddTemplate = () => {
                 </Box>
                 <Box sx={{ width: '45%' }}>
                     <Typography variant='h4' align='center' color='secondary'>Receiver will get</Typography>
-                    <PreviewCard item={newTemplate} />
+                    <PreviewCard item={newTemplate} image={uploadedImage} />
                 </Box>
             </Box>
             <Box textAlign='center'>

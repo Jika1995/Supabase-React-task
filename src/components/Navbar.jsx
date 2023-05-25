@@ -52,6 +52,10 @@ function ResponsiveAppBar() {
 
     console.log(userInSys);
 
+    if (!userInSys) {
+        return <p>Login please</p>
+    }
+
     return (
         <AppBar position="static" color='transparent'>
             <Container maxWidth="xl">

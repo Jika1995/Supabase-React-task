@@ -2,7 +2,7 @@ import { Box, Button, Container, FormControl, IconButton, InputLabel, MenuItem, 
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { supabase } from '../../lib/supabase';
+import { supabase, SUPABASE_PROJECT_URL } from '../../lib/supabase';
 import { updateTemplate } from '../../services/updateTemplate';
 import PreviewCard from './PreviewCard';
 import ReactDOMServer from 'react-dom/server';
@@ -11,6 +11,8 @@ import { saveAs } from 'file-saver';
 const EditTemplate = () => {
     const { id } = useParams();
     const [templateToEdit, setTemplateToEdit] = useState(null);
+    const [uploadedImage, setUploadedImage] = useState('')
+
     const navigate = useNavigate();
     // const [selectedImage, setSelectedImage] = useState(null)
 
@@ -29,13 +31,31 @@ const EditTemplate = () => {
         } else setTemplateToEdit(data)
     }
 
-    if (!templateToEdit) return
+    async function createImages(e) {
+        const image = e.target.files[0];
+        const newImageName = Date.now() + image.name
+
+        const res = await supabase
+            .storage
+            .from('images')
+            .upload(newImageName, image)
+        if (res.error) {
+            return alert(`${res.error.message}`)
+        }
+        if (res.data) {
+            const url = SUPABASE_PROJECT_URL + '/storage/v1/object/public/images/' + res.data.path
+            setUploadedImage(url)
+        }
+
+        console.log(res);
+    }
 
     const handleInp = (e) => {
 
         let obj = {
             ...templateToEdit,
-            [e.target.name]: e.target.value
+            [e.target.name]: e.target.value,
+            image: uploadedImage
         };
         setTemplateToEdit(obj)
     };
@@ -55,6 +75,8 @@ const EditTemplate = () => {
         // Save the Blob as a file
         saveAs(blob, 'email.html');
     };
+
+    if (!templateToEdit) return
 
     return (
         <Container sx={{ marginY: '20px', }}>
@@ -85,7 +107,7 @@ const EditTemplate = () => {
                             type="file"
                             accept="image/*"
                             id="image-upload"
-                            // onChange={(e) => setSelectedImage(e.target.files[0])}
+                            onChange={(e) => createImages(e)}
                             style={{ display: 'none' }}
                         />
 
@@ -137,7 +159,7 @@ const EditTemplate = () => {
                 </Box>
                 <Box sx={{ width: '45%' }}>
                     <Typography variant='h4' align='center' color='secondary'>Receiver will get</Typography>
-                    <PreviewCard item={templateToEdit} />
+                    <PreviewCard item={templateToEdit} image={uploadedImage ? uploadedImage : templateToEdit.image} />
                 </Box>
             </Box>
             <Box textAlign='center' sx={{ marginY: '20px', }}>
